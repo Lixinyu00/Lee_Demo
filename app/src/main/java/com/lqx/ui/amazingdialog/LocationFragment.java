@@ -64,7 +64,7 @@ public class LocationFragment extends Fragment implements AdapterView.OnItemClic
         db.close();
         List<String> data = new ArrayList<String>();
         if(count!=0) {
-            for (int i = 1; i <= count + 1; i++) {
+            for (int i = 1; i <= count ; i++) {
                 data.add("第" + i + "条");
             }
         }

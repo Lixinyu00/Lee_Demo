@@ -200,9 +200,7 @@ public class MainActivity extends AppCompatActivity
                 transaction.replace(R.id.tb, mLocationFragment);
                 break;
             case 1:
-                if (mFindFragment == null) {
-                    mFindFragment = FindFragment.newInstance("发现");
-                }
+                mFindFragment=new FindFragment();
                 transaction.replace(R.id.tb, mFindFragment);
                 break;
             case 2:
