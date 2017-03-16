@@ -6,6 +6,7 @@ package com.lqx.ui.amazingdialog;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,14 +15,25 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationClient;
+import com.amap.api.location.AMapLocationClientOption;
+import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps.AMap;
+import com.amap.api.maps.LocationSource;
 import com.amap.api.maps.MapView;
+import com.amap.api.maps.model.MyLocationStyle;
 
 
-public class FindFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
+public class FindFragment extends Fragment implements CompoundButton.OnCheckedChangeListener,LocationSource,AMapLocationListener {
     private MapView mapView;
     private AMap aMap;
     private ToggleButton btn_mapchange;
+    private MyLocationStyle myLocationStyle;
+    private OnLocationChangedListener mListener;
+    private AMapLocationClient locationClient;
+    private AMapLocationClientOption clientOption;
+
 
     public static FindFragment newInstance() {
         FindFragment fragment = new FindFragment();
@@ -53,11 +65,60 @@ public class FindFragment extends Fragment implements CompoundButton.OnCheckedCh
         {
             aMap=mapView.getMap();
         }
+        myLocationStyle = new MyLocationStyle();//初始化定位蓝点样式类
+        aMap.setMyLocationStyle(myLocationStyle);
+        aMap.getUiSettings().setMyLocationButtonEnabled(true);
+        aMap.setLocationSource(this);
+        aMap.setMyLocationEnabled(true);
         btn_mapchange=(ToggleButton) view.findViewById(R.id.btn_mapchange);
     }
 
     private void initlistener(){
+
         btn_mapchange.setOnCheckedChangeListener(this);
+    }
+
+    /**
+     * 激活定位
+     */
+    @Override
+    public void activate(OnLocationChangedListener listener) {
+        mListener=listener;
+        if(locationClient==null){
+            locationClient=new AMapLocationClient(getActivity());
+            clientOption=new AMapLocationClientOption();
+            locationClient.setLocationListener(this);
+            clientOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
+            clientOption.setOnceLocationLatest(true);
+            locationClient.setLocationOption(clientOption);
+            locationClient.startLocation();
+        }
+
+    }
+    /**
+     * 停止定位
+     */
+    @Override
+    public void deactivate() {
+        mListener=null;
+        if(locationClient!=null){
+            locationClient.stopLocation();
+            locationClient.onDestroy();
+        }
+        locationClient=null;
+    }
+
+    @Override
+    public void onLocationChanged(AMapLocation aMapLocation) {
+        if (mListener != null&&aMapLocation != null) {
+            if (aMapLocation != null
+                    &&aMapLocation.getErrorCode() == 0) {
+                mListener.onLocationChanged(aMapLocation);// 显示系统小蓝点
+            } else {
+                String errText = "定位失败," + aMapLocation.getErrorCode()+ ": " + aMapLocation.getErrorInfo();
+                Log.e("AmapErr",errText);
+            }
+        }
     }
 
     @Override
@@ -92,6 +153,9 @@ public class FindFragment extends Fragment implements CompoundButton.OnCheckedCh
     public void onDestroy() {
         super.onDestroy();
         mapView.onDestroy();
+        if(locationClient!=null){
+            locationClient.onDestroy();
+        }
     }
 }
 
