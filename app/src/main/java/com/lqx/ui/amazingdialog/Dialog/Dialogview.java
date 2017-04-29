@@ -1,18 +1,19 @@
-package com.lqx.ui.amazingdialog;
+package com.lqx.ui.amazingdialog.Dialog;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.lqx.ui.amazingdialog.Db.DatabaseHelper;
+import com.lqx.ui.amazingdialog.MainActivity;
+import com.lqx.ui.amazingdialog.R;
 
 /**
  * Created by NEDUsoftware on 2016/12/30.
@@ -51,22 +52,22 @@ public class Dialogview extends Dialog implements View.OnClickListener {
 
     private void select(){
         switch (resLayout){
-            case R.layout.a_dialog:
+            case R.layout.dialog_a:
                 sql = "insert into dl(ID,Did,title,content) values('" + Count() + "','1','" + et_1.getText().toString() + "','" + et_2.getText().toString() + "')";
                 break;
-            case R.layout.b_dialog:
+            case R.layout.dialog_b:
                 sql = "insert into dl(ID,Did,title,content) values('" + Count() + "','2','" + et_1.getText().toString() + "','" + et_2.getText().toString() + "')";
                 break;
-            case R.layout.c_dialog:
+            case R.layout.dialog_c:
                 sql = "insert into dl(ID,Did,title,content) values('" + Count() + "','3','" + et_1.getText().toString() + "','" + et_2.getText().toString() + "')";
                 break;
-            case R.layout.d_dialog:
+            case R.layout.dialog_d:
                 sql = "insert into dl(ID,Did,title,A,B,C,D) values('" + Count() + "','4','" + et_1.getText().toString() + "','" + et_2.getText().toString() + "','" + et_3.getText().toString() + "','" + et_4.getText().toString() + "','" + et_5.getText().toString() + "')";
                 break;
-            case R.layout.e_dialog:
+            case R.layout.dialog_e:
                 sql = "insert into dl(ID,Did,title) values('" + Count() + "','5','" + et_1.getText().toString() + "')";
                 break;
-            case R.layout.f_dialog:
+            case R.layout.dialog_f:
                 sql = "insert into dl(ID,Did,title,content,confirm,title_1,content_1,confirm_1) values('" + Count() + "','6','" + et_1.getText().toString() + "','" + et_2.getText().toString() + "','" + et_3.getText().toString() + "','" + et_4.getText().toString() + "','" + et_5.getText().toString() + "','" + et_6.getText().toString() + "')";
                 break;
         }

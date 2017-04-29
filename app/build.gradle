@@ -36,4 +36,6 @@ dependencies {
     compile 'com.ashokvarma.android:bottom-navigation-bar:0.9.5'
     compile files('libs/AMap_Location_V3.3.0_20170118.jar')
     compile files('libs/Android_Map3D_SDK_V5.0.0_20170311.jar')
+    compile 'cn.bmob.android:bmob-sdk:3.5.0'
+    compile 'cn.bmob.android:http-legacy:1.0'
 }

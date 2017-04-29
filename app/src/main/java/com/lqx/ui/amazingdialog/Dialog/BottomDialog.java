@@ -1,9 +1,11 @@
-package com.lqx.ui.amazingdialog;
+package com.lqx.ui.amazingdialog.Dialog;
 
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.widget.TextView;
+
+import com.lqx.ui.amazingdialog.R;
 
 /**
  * User: Ivor

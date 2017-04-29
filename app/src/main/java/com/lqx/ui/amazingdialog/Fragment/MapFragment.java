@@ -1,4 +1,4 @@
-package com.lqx.ui.amazingdialog;
+package com.lqx.ui.amazingdialog.Fragment;
 
 /**
  * Created by NEDUsoftware on 2016/11/3.
@@ -10,9 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.amap.api.location.AMapLocation;
@@ -23,9 +21,10 @@ import com.amap.api.maps.AMap;
 import com.amap.api.maps.LocationSource;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.model.MyLocationStyle;
+import com.lqx.ui.amazingdialog.R;
 
 
-public class FindFragment extends Fragment implements CompoundButton.OnCheckedChangeListener,LocationSource,AMapLocationListener {
+public class MapFragment extends Fragment implements CompoundButton.OnCheckedChangeListener,LocationSource,AMapLocationListener {
     private MapView mapView;
     private AMap aMap;
     private ToggleButton btn_mapchange;
@@ -35,12 +34,12 @@ public class FindFragment extends Fragment implements CompoundButton.OnCheckedCh
     private AMapLocationClientOption clientOption;
 
 
-    public static FindFragment newInstance() {
-        FindFragment fragment = new FindFragment();
+    public static MapFragment newInstance() {
+        MapFragment fragment = new MapFragment();
         return fragment;
     }
 
-    public FindFragment() {
+    public MapFragment() {
 
     }
 
@@ -52,7 +51,7 @@ public class FindFragment extends Fragment implements CompoundButton.OnCheckedCh
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_find, container, false);
+        View view = inflater.inflate(R.layout.fragment_map, container, false);
         initview(savedInstanceState,view);
         initlistener();
         return view;
@@ -68,6 +67,7 @@ public class FindFragment extends Fragment implements CompoundButton.OnCheckedCh
         myLocationStyle = new MyLocationStyle();//初始化定位蓝点样式类
         aMap.setMyLocationStyle(myLocationStyle);
         aMap.getUiSettings().setMyLocationButtonEnabled(true);
+        aMap.getUiSettings().setTiltGesturesEnabled(false);
         aMap.setLocationSource(this);
         aMap.setMyLocationEnabled(true);
         btn_mapchange=(ToggleButton) view.findViewById(R.id.btn_mapchange);
@@ -88,8 +88,8 @@ public class FindFragment extends Fragment implements CompoundButton.OnCheckedCh
             locationClient=new AMapLocationClient(getActivity());
             clientOption=new AMapLocationClientOption();
             locationClient.setLocationListener(this);
-            clientOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
-            clientOption.setOnceLocationLatest(true);
+            clientOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);//高精度定位
+            clientOption.setOnceLocationLatest(true);//设置单次精确定位
             locationClient.setLocationOption(clientOption);
             locationClient.startLocation();
         }
@@ -131,6 +131,9 @@ public class FindFragment extends Fragment implements CompoundButton.OnCheckedCh
         }
     }
 
+    /**
+     * 必须重写以下方法
+     */
     @Override
     public void onResume(){
         super.onResume();

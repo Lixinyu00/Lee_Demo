@@ -1,4 +1,4 @@
-package com.lqx.ui.amazingdialog;
+package com.lqx.ui.amazingdialog.Fragment;
 
 /**
  * Created by NEDUsoftware on 2016/10/31.
@@ -6,7 +6,6 @@ package com.lqx.ui.amazingdialog;
 
 import android.app.Fragment;
 import android.database.Cursor;
-import android.database.DataSetObserver;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,13 +15,16 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
 import android.widget.ListView;
-import android.widget.Toast;
+
+import com.lqx.ui.amazingdialog.Db.DatabaseHelper;
+import com.lqx.ui.amazingdialog.Dialog.DialogDemo;
+import com.lqx.ui.amazingdialog.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class LocationFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class DialogFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private DatabaseHelper database;
     private SQLiteDatabase db;
@@ -30,12 +32,12 @@ public class LocationFragment extends Fragment implements AdapterView.OnItemClic
     private DialogDemo dl;
     private int did;
 
-    public static LocationFragment newInstance() {
-        LocationFragment fragment = new LocationFragment();
+    public static DialogFragment newInstance() {
+        DialogFragment fragment = new DialogFragment();
         return fragment;
     }
 
-    public LocationFragment() {
+    public DialogFragment() {
 
     }
 
@@ -47,7 +49,7 @@ public class LocationFragment extends Fragment implements AdapterView.OnItemClic
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_location, container, false);
+        View view = inflater.inflate(R.layout.fragment_dialog, container, false);
         listView = (ListView) view.findViewById(R.id.list_main);
         listView.setAdapter(new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, getData()));
         listView.setOnItemClickListener(this);

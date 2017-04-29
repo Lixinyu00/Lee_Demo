@@ -2,7 +2,6 @@ package com.lqx.ui.amazingdialog;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -15,9 +14,16 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
+import com.lqx.ui.amazingdialog.Db.DatabaseHelper;
+import com.lqx.ui.amazingdialog.Dialog.Dialogview;
+import com.lqx.ui.amazingdialog.Fragment.UserFragment;
+import com.lqx.ui.amazingdialog.Fragment.WeatherFragment;
+import com.lqx.ui.amazingdialog.Fragment.MapFragment;
+import com.lqx.ui.amazingdialog.Fragment.DialogFragment;
 
 /**
  *
@@ -28,16 +34,17 @@ public class MainActivity extends AppCompatActivity
     private BottomNavigationBar bottomNavigationBar;
     private int lastSelectedPosition = 0;
     private String TAG = MainActivity.class.getSimpleName();
-    private LocationFragment mLocationFragment;
-    private FindFragment mFindFragment;
-    private FavoritesFragment mFavoritesFragment;
-    private BookFragment mBookFragment;
+    private DialogFragment mLocationFragment;
+    private MapFragment mFindFragment;
+    private WeatherFragment mWeatherFragment;
+    private UserFragment mBookFragment;
     private Toolbar toolbar;
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private ActionBarDrawerToggle toggle;
     private DatabaseHelper database;
     private SQLiteDatabase db = null;
+    private ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +68,7 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
+        imageView=(ImageView)navigationView.getHeaderView(0).findViewById(R.id.imageView);
 
         bottomNavigationBar = (BottomNavigationBar) findViewById(R.id.bottom_navigation_bar);
         bottomNavigationBar
@@ -143,27 +151,27 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         switch (item.getItemId()) {
             case R.id.nav_camera:
-                dialogview=new Dialogview(this,R.layout.a_dialog);
+                dialogview=new Dialogview(this,R.layout.dialog_a);
                 dialogview.show();
                 break;
             case R.id.nav_gallery:
-                dialogview=new Dialogview(this,R.layout.b_dialog);
+                dialogview=new Dialogview(this,R.layout.dialog_b);
                 dialogview.show();
                 break;
             case R.id.nav_slideshow:
-                dialogview=new Dialogview(this,R.layout.c_dialog);
+                dialogview=new Dialogview(this,R.layout.dialog_c);
                 dialogview.show();
                 break;
             case R.id.nav_manage:
-                dialogview=new Dialogview(this,R.layout.d_dialog);
+                dialogview=new Dialogview(this,R.layout.dialog_d);
                 dialogview.show();
                 break;
             case R.id.nav_share:
-                dialogview=new Dialogview(this,R.layout.e_dialog);
+                dialogview=new Dialogview(this,R.layout.dialog_e);
                 dialogview.show();
                 break;
             case R.id.nav_send:
-                dialogview=new Dialogview(this,R.layout.f_dialog);
+                dialogview=new Dialogview(this,R.layout.dialog_f);
                 dialogview.show();
                 break;
         }
@@ -183,7 +191,7 @@ public class MainActivity extends AppCompatActivity
     private void setDefaultFragment() {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
-        mLocationFragment = new LocationFragment();
+        mLocationFragment = new DialogFragment();
         transaction.replace(R.id.tb, mLocationFragment);
         transaction.commit();
     }
@@ -196,23 +204,19 @@ public class MainActivity extends AppCompatActivity
         FragmentTransaction transaction = fm.beginTransaction();
         switch (position) {
             case 0:
-                mLocationFragment = new LocationFragment();
+                mLocationFragment = new DialogFragment();
                 transaction.replace(R.id.tb, mLocationFragment);
                 break;
             case 1:
-                mFindFragment=new FindFragment();
+                mFindFragment=new MapFragment();
                 transaction.replace(R.id.tb, mFindFragment);
                 break;
             case 2:
-                if (mFavoritesFragment == null) {
-                    mFavoritesFragment = FavoritesFragment.newInstance("爱好");
-                }
-                transaction.replace(R.id.tb, mFavoritesFragment);
+                mWeatherFragment =new WeatherFragment();
+                transaction.replace(R.id.tb, mWeatherFragment);
                 break;
             case 3:
-                if (mBookFragment == null) {
-                    mBookFragment = BookFragment.newInstance("图书");
-                }
+                mBookFragment=new UserFragment();
                 transaction.replace(R.id.tb, mBookFragment);
                 break;
             default:

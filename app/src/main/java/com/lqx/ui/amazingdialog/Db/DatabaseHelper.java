@@ -1,4 +1,4 @@
-package com.lqx.ui.amazingdialog;
+package com.lqx.ui.amazingdialog.Db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
