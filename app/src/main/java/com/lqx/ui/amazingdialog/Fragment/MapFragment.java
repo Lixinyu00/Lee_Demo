@@ -34,11 +34,6 @@ public class MapFragment extends Fragment implements CompoundButton.OnCheckedCha
     private AMapLocationClientOption clientOption;
 
 
-    public static MapFragment newInstance() {
-        MapFragment fragment = new MapFragment();
-        return fragment;
-    }
-
     public MapFragment() {
 
     }
@@ -49,8 +44,7 @@ public class MapFragment extends Fragment implements CompoundButton.OnCheckedCha
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
         initview(savedInstanceState,view);
         initlistener();

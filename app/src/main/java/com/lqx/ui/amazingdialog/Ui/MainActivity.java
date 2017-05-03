@@ -1,9 +1,12 @@
-package com.lqx.ui.amazingdialog;
+package com.lqx.ui.amazingdialog.Ui;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,15 +18,27 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
+import com.lqx.ui.amazingdialog.Bean.UserBean;
 import com.lqx.ui.amazingdialog.Db.DatabaseHelper;
 import com.lqx.ui.amazingdialog.Dialog.Dialogview;
 import com.lqx.ui.amazingdialog.Fragment.UserFragment;
 import com.lqx.ui.amazingdialog.Fragment.WeatherFragment;
 import com.lqx.ui.amazingdialog.Fragment.MapFragment;
 import com.lqx.ui.amazingdialog.Fragment.DialogFragment;
+import com.lqx.ui.amazingdialog.R;
+
+import java.io.File;
+import java.util.List;
+
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.datatype.BmobFile;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.DownloadFileListener;
+import cn.bmob.v3.listener.FindListener;
 
 /**
  *
@@ -45,6 +60,9 @@ public class MainActivity extends AppCompatActivity
     private DatabaseHelper database;
     private SQLiteDatabase db = null;
     private ImageView imageView;
+    private Boolean isuser;
+    private BmobFile bmobFile;
+    private Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +73,21 @@ public class MainActivity extends AppCompatActivity
         initview();
         initlistener();
         setDefaultFragment();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPreferences pref = getSharedPreferences("userdata", MODE_PRIVATE);
+        String iconpath = getApplicationContext().getFilesDir() + "/" + pref.getString("userId", "") + ".jpg";
+        File icon = new File(iconpath);
+        if (isuser && icon.exists()) {
+            Bitmap bitmap = BitmapFactory.decodeFile(iconpath);
+            imageView.setImageBitmap(bitmap);
+        } else {
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.launcher);
+            imageView.setImageBitmap(bitmap);
+        }
     }
 
     private void initview() {
@@ -68,16 +101,36 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
-        imageView=(ImageView)navigationView.getHeaderView(0).findViewById(R.id.imageView);
+        imageView = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.imageView);
+        TextView textView = (TextView) navigationView.getHeaderView(0).findViewById(R.id.t_header);
 
         bottomNavigationBar = (BottomNavigationBar) findViewById(R.id.bottom_navigation_bar);
         bottomNavigationBar
-                .addItem(new BottomNavigationItem(R.mipmap.ic_location_on_white_24dp, "位置").setActiveColor(R.color.orange))
-                .addItem(new BottomNavigationItem(R.mipmap.ic_find_replace_white_24dp, "发现").setActiveColor(R.color.blue))
-                .addItem(new BottomNavigationItem(R.mipmap.ic_favorite_white_24dp, "爱好").setActiveColor(R.color.green))
-                .addItem(new BottomNavigationItem(R.mipmap.ic_book_white_24dp, "图书").setActiveColor(R.color.colorAccent))
+                .addItem(new BottomNavigationItem(R.mipmap.ic_book_white_24dp, "Dialog").setActiveColor(R.color.orange))
+                .addItem(new BottomNavigationItem(R.mipmap.ic_location_on_white_24dp, "位置").setActiveColor(R.color.cadetblue))
+                .addItem(new BottomNavigationItem(R.mipmap.ic_find_replace_white_24dp, "天气").setActiveColor(R.color.green_1))
+                .addItem(new BottomNavigationItem(R.mipmap.ic_favorite_white_24dp, "用户").setActiveColor(R.color.colorAccent))
                 .setFirstSelectedPosition(lastSelectedPosition)
                 .initialise();
+        SharedPreferences pref = getSharedPreferences("userdata", MODE_PRIVATE);
+        isuser = pref.getBoolean("isuser", false);
+        if (isuser) {
+            textView.setText("欢迎回来！"+pref.getString("userName",""));
+            Log.e("11111", "userIcon: "+pref.getBoolean("userIcon", false) );
+            if (pref.getBoolean("userIcon", false)) {
+                downloadBitmap(pref.getString("userId", ""));
+            }
+        }
+        String iconpath = getApplicationContext().getFilesDir() + "/" + pref.getString("userId", "") + ".jpg";
+        File icon = new File(iconpath);
+        if (isuser && icon.exists()) {
+            Log.e("11111", "icon.exists():true " );
+            Bitmap bitmap = BitmapFactory.decodeFile(iconpath);
+            imageView.setImageBitmap(bitmap);
+        } else {
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.launcher);
+            imageView.setImageBitmap(bitmap);
+        }
     }
 
     private void initlistener() {
@@ -151,27 +204,27 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         switch (item.getItemId()) {
             case R.id.nav_camera:
-                dialogview=new Dialogview(this,R.layout.dialog_a);
+                dialogview = new Dialogview(this, R.layout.dialog_a);
                 dialogview.show();
                 break;
             case R.id.nav_gallery:
-                dialogview=new Dialogview(this,R.layout.dialog_b);
+                dialogview = new Dialogview(this, R.layout.dialog_b);
                 dialogview.show();
                 break;
             case R.id.nav_slideshow:
-                dialogview=new Dialogview(this,R.layout.dialog_c);
+                dialogview = new Dialogview(this, R.layout.dialog_c);
                 dialogview.show();
                 break;
             case R.id.nav_manage:
-                dialogview=new Dialogview(this,R.layout.dialog_d);
+                dialogview = new Dialogview(this, R.layout.dialog_d);
                 dialogview.show();
                 break;
             case R.id.nav_share:
-                dialogview=new Dialogview(this,R.layout.dialog_e);
+                dialogview = new Dialogview(this, R.layout.dialog_e);
                 dialogview.show();
                 break;
             case R.id.nav_send:
-                dialogview=new Dialogview(this,R.layout.dialog_f);
+                dialogview = new Dialogview(this, R.layout.dialog_f);
                 dialogview.show();
                 break;
         }
@@ -208,15 +261,15 @@ public class MainActivity extends AppCompatActivity
                 transaction.replace(R.id.tb, mLocationFragment);
                 break;
             case 1:
-                mFindFragment=new MapFragment();
+                mFindFragment = new MapFragment();
                 transaction.replace(R.id.tb, mFindFragment);
                 break;
             case 2:
-                mWeatherFragment =new WeatherFragment();
+                mWeatherFragment = new WeatherFragment();
                 transaction.replace(R.id.tb, mWeatherFragment);
                 break;
             case 3:
-                mBookFragment=new UserFragment();
+                mBookFragment = new UserFragment();
                 transaction.replace(R.id.tb, mBookFragment);
                 break;
             default:
@@ -234,6 +287,43 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onTabReselected(int position) {
 
+    }
+
+    /**
+     * 下载头像Icon by lxy
+     */
+    public void downloadBitmap(String userId) {
+        Log.e("11111", "download:true " );
+        final String path = getApplicationContext().getFilesDir() + "/" + userId + ".jpg";
+        BmobQuery<UserBean> bmobQuery = new BmobQuery<UserBean>();
+        bmobQuery.addWhereEqualTo("id", userId);
+        bmobQuery.findObjects(new FindListener<UserBean>() {
+            @Override
+            public void done(List<UserBean> list, BmobException e) {
+                if (e == null) {
+                    Log.e("11111", "done:true " );
+                    for (UserBean user : list) {
+                        bmobFile = user.getIcon();
+                    }
+                    Log.e("11111", "bmobFile "+bmobFile );
+                    File savePath = new File(path);
+                    bmobFile.download(savePath, new DownloadFileListener() {
+                        @Override
+                        public void done(String s, BmobException e) {
+                            bitmap = BitmapFactory.decodeFile(path);
+                            Log.e("11111", "down :true " );
+                        }
+
+                        @Override
+                        public void onProgress(Integer integer, long l) {
+
+                        }
+                    });
+                } else {
+                    Log.e("11111", "download:false "+e );
+                }
+            }
+        });
     }
 }
 

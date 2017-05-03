@@ -83,6 +83,32 @@
             android:textSize="20dp"
             android:layout_marginRight="15dp"/>
     </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/layout_mail"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="邮箱"
+            android:textColor="@color/black"
+            android:textSize="20dp"
+            android:layout_marginLeft="15dp"/>
+
+        <TextView
+            android:id="@+id/t_mail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:textColor="@color/black"
+            android:textSize="20dp"
+            android:layout_marginRight="15dp"/>
+    </RelativeLayout>
     <Button
         android:id="@+id/btn_exituser"
         android:layout_width="250dp"

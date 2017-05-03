@@ -12,7 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.lqx.ui.amazingdialog.Db.DatabaseHelper;
-import com.lqx.ui.amazingdialog.MainActivity;
+import com.lqx.ui.amazingdialog.Ui.MainActivity;
 import com.lqx.ui.amazingdialog.R;
 
 /**
